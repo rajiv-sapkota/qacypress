@@ -1,0 +1,23 @@
+{
+  "name": "qacypress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "firsttest.cy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rajiv-sapkota/qacypress.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rajiv-sapkota/qacypress/issues"
+  },
+  "homepage": "https://github.com/rajiv-sapkota/qacypress#readme",
+  "dependencies": {
+    "cypress": "^13.17.0"
+  }
+}
