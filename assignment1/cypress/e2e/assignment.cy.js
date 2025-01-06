@@ -2,15 +2,16 @@
 
 describe("assignment1", () => {
    
-    
+    beforeEach(()=>{
+        cy.login(Cypress.env("username"),Cypress.env("password"))
+    })
 
     it("should login to the url" , () =>{
-      cy.login("standard_user","secret_sauce")
-
+      cy.url().should("eq","https://www.saucedemo.com/inventory.html")
     })
 
     it("should add products with odd index to the cart" , () =>{
-        cy.login("standard_user","secret_sauce")
+        
         for (let i=0;i<6;i++)
         {
             if (i % 2 == 0)
@@ -21,8 +22,8 @@ describe("assignment1", () => {
             }
         }
     })
-    it.only('should add products with odd index using jquery dynamically', () => {
-        cy.login("standard_user","secret_sauce")
+    it('should add products with odd index using jquery dynamically', () => {
+        
         cy.contains('Swag Labs').should('be.visible')
         cy.get('.btn_inventory').each(($btnadd,index) => { //geting each btn locator from .btn_inventory and creating an jQuery object $btn
            if(index %2 == 0)
@@ -33,7 +34,7 @@ describe("assignment1", () => {
            }
            
         }) 
-        cy.get('.btn_inventory').each(($btnRemove,index) => { //geting each btn locator from .btn_inventory and creating an jQuery object $btn
+        cy.get('.btn_inventory').each(($btnRemove,index) => { //geting each btn locator from .btn_inventory and creating an jQuery object $btnRemove
             if(index %2 == 0)
             {
              cy.wrap($btnRemove).should("have.text","Remove")
@@ -41,7 +42,7 @@ describe("assignment1", () => {
             })     
     })
     it('should add products with odd index using jquery dynamically and then remove them', () => {
-        cy.login("standard_user","secret_sauce")
+       
         cy.contains('Swag Labs').should('be.visible')
         cy.get('.btn_inventory').each(($btn,index) => { //geting each btn locator from .btn_inventory and creating an jQuery object $btn
            if(index %2 == 0)
@@ -63,6 +64,65 @@ describe("assignment1", () => {
          }) 
 
     })
+
+   
+        
+    it("should sort and assert prices", ()=>{
+        cy.get(".product_sort_container").select("Price (high to low)")
+        cy.get(".inventory_item_price").then(($priceLocator) => { 
+            const crudePrice = Cypress._.map($priceLocator , (item) => item.innerText)
+            cy.log(crudePrice.slice(0-9).join(","))
+            const cleanText = (string) => string.replace(/[^0-9.]/g,"")
+            const signsRemoved = crudePrice.map(cleanText)
+            cy.log(signsRemoved.slice(0-9).join(","))
+            const priceInDigits = signsRemoved.map(parseFloat)
+            const defaultSort = Cypress._.sortBy(priceInDigits)
+            cy.log(defaultSort.slice(0-9).join(","))
+            const decendingSort = defaultSort.reverse()
+            cy.log(decendingSort.slice(0-9).join(","))
+            expect(decendingSort).to.deep.equal(priceInDigits)
+        })
+
+
+    })
+
+    it.only("should sort and assert without using .sort method",() =>{
+        cy.get(".product_sort_container").select("Price (high to low)")
+        cy.get(".inventory_item_price").then(($locators) => {
+            const textPrice = Cypress._.map($locators,(item)=>item.innerText)
+            const dollarRemover = (string) => string.replace(/[^0-9.]/g,"")
+            const dollarRemoved = textPrice.map(dollarRemover)
+            cy.log("dollars removed"+dollarRemoved.slice(0-9).join(","))
+            const price=dollarRemoved.map(parseFloat)
+            cy.log("price in number"+price.slice(0-9).join(","))
+            
+
+            //to sort manually
+            const sortedDecending = (arr) =>{
+                for(let i=0;i<arr.length-1;i++){
+                    for(let j=i+1;j<arr.length;j++){
+                        if(arr[i]<arr[j]){
+                            [arr[i].arr[j]=arr[j].arr[i]]
+                           
+                        }
+                    }
+                }
+                return arr
+
+
+            }
+            const sortedPrice=sortedDecending([...price])
+            cy.log("sortedDiscending"+sortedPrice.slice(0-9).join(","))
+            expect(sortedPrice).to.deep.equal(price)
+
+            
+
+        })
+
+
+
+    })
+
 
     
 })
