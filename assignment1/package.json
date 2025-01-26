@@ -1,14 +1,16 @@
 {
   "dependencies": {
     "cypress": "^13.17.0"
-  }
+  },
   
-},
- "scripts": {
+
+  "scripts": { 
   "cy:run:prod": "cypress run --config-file prod.config.js",
   "cy:run:stg": "cypress run --config-file stg.config.js",
   "cy:open:prod": "cypress open --config-file prod.config.js",
   "cy:open:stg": "cypress open --config-file stg.config.js"
-},
+}
+}
+
 
  

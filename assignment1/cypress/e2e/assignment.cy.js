@@ -28,7 +28,8 @@ describe("assignment1", () => {
         cy.get('.btn_inventory').each(($btnadd,index) => { //geting each btn locator from .btn_inventory and creating an jQuery object $btn
            if(index %2 == 0)
            {
-            cy.wrap($btnadd).click()
+            cy.wrap($btnadd).should("have.text","Add to cart").click()
+            
           
             
            }
@@ -39,7 +40,7 @@ describe("assignment1", () => {
             {
              cy.wrap($btnRemove).should("have.text","Remove")
             }
-            })     
+           })     
     })
     it('should add products with odd index using jquery dynamically and then remove them', () => {
        
@@ -87,7 +88,7 @@ describe("assignment1", () => {
     })
 
     it.only("should sort and assert without using .sort method",() =>{
-        cy.get(".product_sort_container").select("Price (high to low)")
+        cy.get(".product_sort_container").select("Price (low to high)")
         cy.get(".inventory_item_price").then(($locators) => {
             const textPrice = Cypress._.map($locators,(item)=>item.innerText)
             const dollarRemover = (string) => string.replace(/[^0-9.]/g,"")
@@ -98,11 +99,14 @@ describe("assignment1", () => {
             
 
             //to sort manually
-            const sortedDecending = (arr) =>{
-                for(let i=0;i<arr.length-1;i++){
-                    for(let j=i+1;j<arr.length;j++){
-                        if(arr[i]<arr[j]){
-                            [arr[i].arr[j]=arr[j].arr[i]]
+            const sortedAscending = (arr) =>{
+                for(let i=0;i<arr.length;i++){
+                    for(let j=0;j<arr.length-1;j++){
+                        if(arr[j]>arr[j+1]){
+                            let a = arr[j]
+                            arr[j]=arr[j+1]
+                            arr[j+1]=a
+
                            
                         }
                     }
@@ -111,7 +115,8 @@ describe("assignment1", () => {
 
 
             }
-            const sortedPrice=sortedDecending([...price])
+            cy.log("price in number"+price.slice(0-9).join(","))
+            const sortedPrice=sortedAscending([...price])
             cy.log("sortedDiscending"+sortedPrice.slice(0-9).join(","))
             expect(sortedPrice).to.deep.equal(price)
 
